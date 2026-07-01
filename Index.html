@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Memories Website</title>
+    <style>
+        /* Base Aesthetic Styling for Mobile Viewports */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b132b;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        /* Container designed to fit cleanly on screens like Samsung A22 */
+        .phone-container {
+            width: 100%;
+            max-width: 412px;
+            min-height: 80vh;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            min-height: 80vh;
+            padding: 25px 20px;
+            overflow-y: auto;
+            flex-direction: column;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        /* Button Layout Styles */
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 25px;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
+            flex: 1;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-next {
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .btn-back {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        /* PAGE 1 & 2: Navy Background Styles */
+        #page1, #page2 {
+            background-color: #0A192F;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .password-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .password-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .caption-text {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #8892b0;
+        }
+
+        /* PAGE 3: Dark Violet Background with White Card */
+        #page3 {
+            background-color: #241133;
+        }
+
+        .white-card {
+            background-color: #F4F4F9;
+            color: #241133;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .nickname-list {
+            list-style: none;
+            margin: 15px 0;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .welcome-msg {
+            font-style: italic;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        /* PAGE 4: Deep Plum / Dark Grape */
+        #page4 {
+            background-color: #3B1C32;
+        }
+
+        /* PAGE 5: Amethyst / Deep Mauve */
+        #page5 {
+            background-color: #5C3A5A;
+        }
+
+        /* List Items Styling for Pages 4 & 5 */
+        .memory-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .memory-list {
+            list-style: none;
+            font-size: 14px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .memory-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            line-height: 1.4;
+        }
+
+        /* PAGE 6: Muted Mauve Background */
+        #page6 {
+            background-color: #6C5B7B;
+        }
+
+        /* Image Slideshow Design Style */
+        .slideshow-box {
+            background-color: #351431;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slideshow-img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            object-fit: contain;
+            display: none;
+        }
+
+        .slideshow-img.active-img {
+            display: block;
+        }
+
+        /* Final Letter Container Styling */
+        .letter-box {
+            background-color: #FFF0F5;
+            color: #333333;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 30vh;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+
+        /* Custom Scrollbar for better UX */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <div id="page1" class="page active">
+            <div class="password-box">
+                <h2>🔒 Group Website</h2>
+                <input type="password" id="password-input" placeholder="Enter Password Here...">
+                <button class="btn-next" onclick="checkPassword()">Unlock</button>
+                <p id="password-error" class="error-msg">❌ Wrong password! Try again.</p>
+                <div class="caption-text">made by Prachi 💙<br>(not by china)</div>
+            </div>
+        </div>
+
+        <div id="page2" class="page">
+            <h2>⏳ Loading...</h2>
+            <p style="margin-top: 15px; color: #8892b0;">Our memorable, funniest moments website</p>
+        </div>
+
+        <div id="page3" class="page">
+            <h2>✨ Welcome, dear friends.</h2>
+            <div class="white-card">
+                <ul class="nickname-list">
+                    <li>🍅 Heer (Tomato)</li>
+                    <li>👩‍🏫 Rutvi (Rutviiii Mam)</li>
+                    <li>🐼 Kavya (Panda)</li>
+                    <li>🧼 Urmila (Santoor)</li>
+                    <li>💄 Sachi (Lip gloss)</li>
+                    <li>💜 Shree (S'triii)</li>
+                    <li>💙 Prachi (mayonise)</li>
+                </ul>
+                <div class="welcome-msg">
+                    <p>Some friendship last forever...</p>
+                    <p>Some change with time...</p>
+                    <p>But beautiful memories never disappear.</p>
+                    <br>
+                    <p>This little website is to remember every smile 😊</p>
+                    <br>
+                    <p>Every Joke 😂</p>
+                    <p>Every school day 🏫</p>
+                    <p>Every silly moments 🤭</p>
+                    <br>
+                    <p>And every unforgettable memory we shared together 💜</p>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button class="btn-next" style="width:100%" onclick="goToPage(4)">Let's Begin our Journey ➔</button>
+            </div>
+        </div>
+
+        <div id="page4" class="page">
+            <h2 class="memory-title">🏫 Our School Memories 🏫</h2>
+            <ul class="memory-list">
+                <li>🌸 The day we first became friends.</li>
+                <li>🎒 Walking to class together every morning.</li>
+                <li>🍱 Sharing our lunch boxes and stealing each other's food. 😂</li>
+                <li>📚 Studying only a few minutes before the exam and somehow surviving. 😂</li>
+                <li>✏️ Borrowing pens, pencils, erasers... and forgetting to return them. 🤔</li>
+                <li>😂 Laughing so loudly that the whole class looked at us.</li>
+                <li>🏃 Running to our seats before the teacher entered.</li>
+                <li>📸 Taking random selfies and funny photos whenever we got the chance.</li>
+                <li>🎂 Celebrating birthdays with smiles, wishes, and lots of happiness.</li>
+                <li>🎉 Enjoying school functions, annual day, sports day, and every event together.</li>
+                <li>🤝 Helping each other during difficult times and always standing together.</li>
+                <li>💬 Sharing our secrets, dreams, and endless gossip during recess.</li>
+                <li>🌈 Turning ordinary school days into unforgettable memories.</li>
+                <li>💖 Every single moment became special because we were together.</li>
+            </ul>
+            <p style="text-align:center; font-size:12px; margin-top:10px; font-style:italic;">🌷 "One day these moments will become memories..."</p>
+            <div class="btn-container">
+                <button class="btn-back" onclick="goToPage(3)">Back</button>
+                <button class="btn-next" onclick="goToPage(5)">Next</button>
+            </div>
+        </div>
+
+        <div id="page5" class="page">
+            <h2 class="memory-title">😂 Our Funniest Moments 😂</h2>
+            <ul class="memory-list">
+                <li>😂 Giving each other the funniest nicknames that only we understood.</li>
+                <li>🍅 Calling Heer "Tomato" every chance we got.</li>
+                <li>🥔 Calling Prachi "Mayonnaise" for absolutely no reason. 😅</li>
+                <li>😆 Shree's legendary "Stree" moments that made everyone laugh.</li>
+                <li>🐼 Kavya being our cute "Panda" and doing panda things.</li>
+                <li>💄 Sachi and her famous 'Lip Gloss Queen' moments. ✨</li>
+                <li>👩‍🏫 Calling Rutvi "Rutvii Mam" whenever she acted serious.</li>
+                <li>🧼 Urmila's "Santoor" moments that became unforgettable.</li>
+                <li>🤫 Trying not to laugh while the teacher was explaining something.</li>
+                <li>😜 Looking at one friend and suddenly the whole group started laughing.</li>
+                <li>📚 Copying homework at the very last minute.</li>
+                <li>📝 Passing tiny chits like secret agents.</li>
+                <li>🤫 Saying "Just one minute..." and then talking for an hour.</li>
+                <li>🤣 Laughing so much that our stomachs started hurting.</li>
+                <li>🤫 Becoming completely silent the moment a teacher looked at us.</li>
+                <li>🤷‍♂️ Acting innocent even when everyone knew we were the troublemakers.</li>
+                <li>🍱 Fighting over lunch, then sharing everything in the end.</li>
+                <li>💬 Endless gossip during recess that never seemed to finish.</li>
+                <li>❤️ Every silly joke, every prank, every laugh... became a memory we'll never forget.</li>
+            </ul>
+            <p style="text-align:center; font-size:12px; margin-top:10px; font-style:italic;">🌈 Years may pass. Schools may change. People may go on different paths. But whenever we remember these funny moments... We'll smile again. 💜😊</p>
+            <div class="btn-container">
+                <button class="btn-back" onclick="goToPage(4)">Back</button>
+                <button class="btn-next" onclick="goToPage(6)">Next</button>
+            </div>
+        </div>
+
+        <div id="page6" class="page">
+
+            <div class="slideshow-box" id="slideshow">
+                <img src="https://i.postimg.cc/52bGynvf/file-00000000f5a47208aecc261f4f519c0.png" class="slideshow-img active-img" alt="Dance Costume Group Photo">
+                <img src="https://i.postimg.cc/mDHV8HCL/Screenshot-20260630-134549-Chat-GPT.jpg" class="slideshow-img" alt="School Uniform Group Photo">
+                <p style="font-size:11px; color:#ddd; margin-top:10px;">📸 Our Memory Slideshow</p>
+            </div>
+
+            <div class="letter-box">
+                <strong>💌 A Letter From Prachi 💌</strong>
+
+                Dear Heer, Shree, Rutvi, Sachi, Kavya and Urmila,
+
+                If you're reading this, thank you for taking the time to visit this little website.
+                I didn't make it to stop anyone or change anyone's decision.
+                I made it because every friendship deserves a place where its memories can live forever.
+
+                From our first conversations... to our endless laughter... from sharing lunch... to making unforgettable memories... every moment became special because all seven of us were together.
+
+                Life keeps changing. People grow. Sometimes our paths become different. And that's okay.
+                But no matter where life takes us, I hope that whenever you remember our school days, a smile appears on your face.
+
+                Thank you for every joke that made my stomach hurt from laughing.
+                Thank you for every small memory that became a part of my life.
+                Thank you for being a part of this beautiful chapter.
+
+                Maybe one day we'll all be busy chasing our dreams. Maybe we won't meet every day like before. But I'll always be grateful that I got to call you my friends.
+
+                Distance can change many things... But it can never erase the memories we've created together.
+                Wherever life takes us, I wish each one of you happiness, success, good health, and lots of beautiful moments.
+
+                Thank you for everything. You'll always have a special place in my heart.
+
+                With lots of love,
+                ❤️ Prachi ❤️
+
+                🌸 "Some friendships become memories... But the best memories never fade."
+                ✨ The End ✨
+            </div>
+
+            <div class="btn-container">
+                <button class="btn-back" onclick="goToPage(5)">Back</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = "7friends";
+
+        function checkPassword() {
+            const userInput = document.getElementById("password-input").value;
+            const errorElement = document.getElementById("password-error");
+
+            if (userInput === CORRECT_PASSWORD) {
+                errorElement.style.display = "none";
+                goToPage(2);
+
+                setTimeout(() => {
+                    goToPage(3);
+                }, 2500);
+
+            } else {
+                errorElement.style.display = "block";
+            }
+        }
+
+        function goToPage(pageNum) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+            document.getElementById("page" + pageNum).classList.add('active');
+        }
+
+        // Slideshow loop for online images
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slideshow-img');
+        
+        setInterval(() => {
+            if(slides.length > 0) {
+                slides[currentSlide].classList.remove('active-img');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active-img');
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
